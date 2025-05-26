@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('endereco_instituicao');
             $table->string('telefone', 20);
             $table->string('imagem')->nullable(); 
+            $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->timestamps();
         });
     }

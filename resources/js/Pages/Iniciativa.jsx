@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import  { useState} from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
-// Dados iniciais
 const initialInitiatives = [
   {
     title: "Orfanatos",
     description: "Texto sobre orfanatos e sua importância.",
-    image: "../Assets/iniciativa3.jpg",
   },
   {
     title: "Educação",

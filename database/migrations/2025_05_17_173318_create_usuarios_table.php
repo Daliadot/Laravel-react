@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('senha', 255);
             $table->string('cpf', 11)->unique();
             $table->string('imagem')->nullable(); // Caminho da imagem (opcional)
+            $table->boolean('is_admin')->nullable();
             $table->timestamps();
         });
     }
