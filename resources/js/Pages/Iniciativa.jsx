@@ -233,3 +233,37 @@ const Iniciativas = () => {
 };
 
 export default Iniciativas;
+/**use App\Models\Instituicao;
+
+public function index()
+{
+    // Busca apenas as instituições com status 'accepted'
+    $instituicoes = Instituicao::where('status', 'accepted')->get();
+
+    return inertia('Home', [
+        'instituicoes' => $instituicoes,
+    ]);
+}
+
+
+
+import React from 'react';
+
+export default function Home({ instituicoes }) {
+  return (
+    <div className="p-6 max-w-5xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">Iniciativas Aprovadas</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {instituicoes.map(inst => (
+          <div key={inst.id} className="border p-4 rounded shadow-md">
+            <h2 className="text-xl font-semibold">{inst.nm_instituicao}</h2>
+            <p className="text-sm text-gray-600">{inst.email_instituicao}</p>
+            <p className="mt-2">{inst.descricao}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+ */

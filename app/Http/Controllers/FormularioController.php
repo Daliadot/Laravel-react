@@ -4,136 +4,59 @@ namespace App\Http\Controllers;
 
 use App\Models\Formulario;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Validator;
+use App\Enums\FormularioStatus;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ConfirmacaoInscricao;
+
 
 class FormularioController extends Controller
 {
-    /**
-     * funcionando
-     */
-    public function index()
-    {
-        $regFormulario = formulario::All();
-        $contador = $regFormulario->count();
-        return Response()->json($regFormulario);
-    }
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'cd_usuario' => 'required|exists:usuarios,id',
+        'cd_instituicao' => 'required|exists:instituicoes,id',
+        'dados' => 'required|array',
+    ]);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'status' => 'required'
-        ]);
+try {
+    $formulario = Formulario::create(array_merge(
+        $validated,
+        ['status' => FormularioStatus::PENDENTE]
+    ));
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'registros inválidos',
-                'errors' => $validator->errors()
-            ], 400);
-        }
-
-        $registros = formulario::create($request->all());
-
-        if ($registros) {
-            return response()->json([
-                'success' => true,
-                'message' => 'formulario cadastrado com sucesso',
-                'data' => $registros
-            ], 201);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'erro ao cadastrar o formulario'
-            ], 500);
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        $regFormulario = formulario::find($id);
-
-        if ($regFormulario) {
-            return response()->json([
-                'success' => true,
-                'message' => 'formulario encontrado',
-                'data' => $regFormulario
-            ], 200);
-        }else{
-            return response()->json([
-                'success' => false,
-                'message' => 'formulario não encontrado'
-            ], 404);
-        }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'status' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'registros inválidos',
-                'errors' => $validator->errors()
-            ], 400);
-        }
-
-        $regFormularioBanco = formulario::find($id);
-
-        if (!$regFormularioBanco) {
-            return respone()->json([
-                'success' => false,
-                'message' => 'formulario não encontrado',
-            ], 404);
-        }
-
-        $regFormularioBanco->status = $request->status;
-
-        if ($regFormularioBanco->save()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'formulario atualizado com sucesso',
-                'data' => $regFormularioBanco
-            ], 201);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'erro ao atualizar o formulario'
-            ], 500);
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        $regFormulario = formulario::find($id);
-        if (!$regFormulario) {
-            return response()->json([
-                'success' => false,
-                'message' => 'formulario não encontrado'
-            ], 404);
-        }
-            if ($regFormulario->delete()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'formulario deletado com sucesso'
-                ], 200);
-            }
-        }
+    return response()->json($formulario, 201);
+} catch (\Exception $e) {
+    return response()->json([
+        'erro' => true,
+        'mensagem' => $e->getMessage()
+    ], 500);
 }
-    
+}
+
+
+    public function atualizarStatus(Request $request, Formulario $formulario)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:aceito,recusado',
+        ]);
+
+        $formulario->update([
+            'status' => $validated['status']
+        ]);
+
+        // Enviar mensagem de confirmação se aceito
+        if ($validated['status'] === FormularioStatus::ACEITO->value) {
+            Mail::to($formulario->usuario->email)->send(new ConfirmacaoInscricao());
+        }
+
+        return response()->json(['mensagem' => 'Status atualizado com sucesso.']);
+    }
+
+    public function listarPorInstituicao($instituicaoId)
+    {
+        return Formulario::where('cd_instituicao', $instituicaoId)
+                         ->with('usuario')
+                         ->get();
+    }
+}

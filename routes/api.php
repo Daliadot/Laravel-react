@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FormularioController;
 use App\Http\Controllers\InstituicoesController;
-use App\Http\Controllers\ServicosController;
 use App\Http\Controllers\UsuariosController;
 
 Route::get('/user', function (Request $request) {
@@ -20,11 +19,15 @@ Route::get('/admin',[AdminController::class,'index']);
 Route::get('/admin/{id}',[AdminController::class,'show']);
 
 // API Routes Formulario
-Route::post('/formulario',[FormularioController::class, 'store']);
-Route::put('/formulario/{id}',[FormularioController::class, 'update']);
-Route::delete('/formulario/{id}',[FormularioController::class, 'destroy']);
-Route::get('/formulario',[FormularioController::class, 'index']);
-Route::get('/formulario/{id}',[FormularioController::class, 'show']);
+
+// Enviar novo formulário para uma instituição
+Route::post('/formularios', [FormularioController::class, 'store']);
+
+Route::patch('/formularios/{formulario}/status', [FormularioController::class, 'atualizarStatus'])->name('formularios.status');
+
+// Ver todos os formulários recebidos por uma instituição
+Route::get('/instituicoes/{id}/formularios', [FormularioController::class, 'listarPorInstituicao'])->name('instituicoes.formularios');
+
 
 // API Routes Instituicoes
 Route::post('/instituicoes',[InstituicoesController::class, 'store']);
@@ -32,13 +35,6 @@ Route::put('/instituicoes/{id}',[InstituicoesController::class, 'update']);
 Route::delete('/instituicoes/{id}',[InstituicoesController::class, 'destroy']);
 Route::get('/instituicoes',[InstituicoesController::class, 'index']);
 Route::get('/instituicoes/{id}',[InstituicoesController::class, 'show']);
-
-// API Routes Servicos
-Route::post('/servicos',[ServicosController::class, 'store']);
-Route::put('/servicos/{id}',[ServicosController::class, 'update']);
-Route::delete('/servicos/{id}',[ServicosController::class, 'destroy']);
-Route::get('/servicos',[ServicosController::class, 'index']);
-Route::get('/servicos/{id}',[ServicosController::class, 'show']);
 
 // API Routes Usuarios
 Route::post('/usuarios',[UsuariosController::class, 'store']);
