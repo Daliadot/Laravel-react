@@ -13,6 +13,7 @@ class FormularioController extends Controller
 {
 public function store(Request $request)
 {
+    //Pega os dados do request e valida
     $validated = $request->validate([
         'cd_usuario' => 'required|exists:usuarios,id',
         'cd_instituicao' => 'required|exists:instituicoes,id',
@@ -20,13 +21,16 @@ public function store(Request $request)
     ]);
 
 try {
+    // Verifica se o usuário já possui um formulário pendente
     $formulario = Formulario::create(array_merge(
         $validated,
         ['status' => FormularioStatus::PENDENTE]
     ));
 
     return response()->json($formulario, 201);
+    // Se o formulário for criado com sucesso, retorna o objeto JSON do formulário
 } catch (\Exception $e) {
+    
     return response()->json([
         'erro' => true,
         'mensagem' => $e->getMessage()
@@ -37,10 +41,11 @@ try {
 
     public function atualizarStatus(Request $request, Formulario $formulario)
     {
+        // Verifica se o usuário é um administrador
         $validated = $request->validate([
             'status' => 'required|in:aceito,recusado',
         ]);
-
+// Verifica se o status é válido
         $formulario->update([
             'status' => $validated['status']
         ]);
@@ -52,6 +57,9 @@ try {
 
         return response()->json(['mensagem' => 'Status atualizado com sucesso.']);
     }
+    // Listar todos os formulários pendentes
+     
+    
 
     public function listarPorInstituicao($instituicaoId)
     {

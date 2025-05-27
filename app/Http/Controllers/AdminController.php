@@ -15,6 +15,8 @@ class AdminController extends Controller
      */
     public function index()
     {
+        // Retorna todos os registros de admin
+        // e o contador de registros
         $regadmin = admin::All();
         $contador = $regadmin->count();
         return Response()->json($regadmin);
@@ -23,6 +25,7 @@ class AdminController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    //Guarda os dados do admin no banco de dados
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -30,7 +33,7 @@ class AdminController extends Controller
             'email' => 'required',
             'senha' => 'required'
         ]);
-
+//se nn gera mensagem de erro
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -38,7 +41,7 @@ class AdminController extends Controller
                 'errors' => $validator->errors()
             ], 400);
         }
-
+// cria um novo registro de admin com os dados do request
         $registros = admin::create($request->all());
 
         if ($registros) {
@@ -46,7 +49,7 @@ class AdminController extends Controller
                 'success' => true,
                 'message' => 'admin cadastrado com sucesso',
                 'data' => $registros
-            ], 201);
+            ], 201);    
         } else {
             return response()->json([
                 'success' => false,
@@ -61,7 +64,8 @@ class AdminController extends Controller
     public function show($id)
     {
         $regadmin = admin::find($id);
-
+//procura o admin no banco de dados pelo ID
+        // se o admin for encontrado, retorna os dados
         if ($regadmin) {
             return response()->json([
                 'success' => true,
@@ -81,6 +85,7 @@ class AdminController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // Valida os dados do request
         $validator = Validator::make($request->all(), [
             'NM_admin' => 'required',
             'email' => 'required',
