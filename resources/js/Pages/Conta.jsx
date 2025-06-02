@@ -5,14 +5,18 @@ const Conta = () => {
   const { user } = usePage().props;
 
   const handleLogout = async () => {
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+
     await fetch("/logout", {
       method: "POST",
       headers: {
+        "X-CSRF-TOKEN": token,
         "X-Requested-With": "XMLHttpRequest",
         "Content-Type": "application/json",
       },
       credentials: "include",
     });
+
     window.location.href = "/";
   };
 

@@ -5,14 +5,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Páginas públicas (middleware 'web' por padrão)
+// Páginas públicas
 Route::get('/', fn() => Inertia::render('Welcome'));
 Route::get('/CadastroVoluntario', fn() => Inertia::render('User/CadastroVoluntario'));
 Route::get('/CadastroInstituicao', fn() => Inertia::render('Ong/CadastroInstituicao'));
 Route::get('/admin', fn() => Inertia::render('Admin'));
 
 // Login voluntário
-Route::get('/login/voluntario', [AuthController::class, 'indexUsuario'])->name('LoginVoluntario');
+Route::get('/login/voluntario', [AuthController::class, 'indexUsuario'])->name('login.voluntario');
 Route::post('/login/voluntario', [AuthController::class, 'loginUsuario'])->name('auth.voluntario');
 
 // Login admin
@@ -23,23 +23,25 @@ Route::post('/login/admin', [AuthController::class, 'loginAdmin'])->name('auth.a
 Route::get('/login/instituicao', [AuthController::class, 'indexInstituicao'])->name('login.instituicao');
 Route::post('/login/instituicao', [AuthController::class, 'loginInstituicao'])->name('auth.instituicao');
 
-// Logout genérico
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// ✅ Logout compartilhado para qualquer guard
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('web')->name('logout');
 
-// Rotas protegidas por autenticação, garantindo uso do middleware 'web' + 'auth'
+// Painel voluntário
 Route::middleware(['web', 'auth:web'])->group(function () {
     Route::get('/dashboard', fn() => 'Dashboard Voluntário')->name('dashboard');
 });
 
+// Painel admin
 Route::middleware(['web', 'auth:admin'])->group(function () {
     Route::get('/admin/dashboard', fn() => 'Dashboard Admin')->name('admin.dashboard');
 });
 
+// Painel instituição
 Route::middleware(['web', 'auth:instituicao'])->group(function () {
     Route::get('/instituicao/dashboard', fn() => 'Dashboard Instituição')->name('instituicao.dashboard');
 });
 
-// Perfil protegido (todas as autenticações)
+// Perfil comum a todos os tipos de usuário autenticado
 Route::middleware('web')->get('/perfil', function () {
     if (Auth::guard('web')->check()) {
         $user = Auth::guard('web')->user();
@@ -62,4 +64,3 @@ Route::middleware('web')->get('/perfil', function () {
         ]
     ]);
 })->name('perfil');
-

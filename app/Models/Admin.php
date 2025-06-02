@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
 
-class Admin extends Model
+class Admin extends Authenticatable
 {
     protected $table = 'Admins';
 
@@ -16,9 +16,9 @@ class Admin extends Model
     ];
 
     /**
-     * Criptografa a password automaticamente ao salvar.
+     * Criptografa a senha automaticamente ao ser definida.
      */
-    public function setpasswordAttribute($value)
+    public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);
     }

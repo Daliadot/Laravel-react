@@ -1,50 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { router } from "@inertiajs/react";
 
 export default function Admin() {
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [password, setpassword] = useState("");
   const [error, setError] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("admin_token");
-    if (token) {
-      setIsAuthenticated(true);
-    }
-  }, []);
-
-const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-   post('/login/admin', {
-  onSuccess: () => {
-    window.location.href = '/admin';
-  },
-  onError: (errors) => {
-    console.log('Erro:', errors);
-  },
-});
+    router.post("/login/admin", {
+      email,
+      password,
+    }, {
+      onSuccess: () => {
+        window.location.href = "/perfil"; // ou qualquer rota protegida
+      },
+      onError: (errors) => {
+        setError(errors.email || errors.password || "Credenciais inválidas.");
+      },
+    });
   };
-
-  const handleLogout = () => {
-    localStorage.removeItem("admin_token");
-    setIsAuthenticated(false);
-  };
-
-  if (isAuthenticated) {
-    return (
-      <div className="p-10">
-        <h1 className="text-2xl font-bold mb-4">Painel do Administrador</h1>
-        <p>Bem-vindo ao painel de administração de instituições!</p>
-        <button
-          onClick={handleLogout}
-          className="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-        >
-          Sair
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -77,16 +53,16 @@ const handleSubmit = (e) => {
           </div>
 
           <div>
-            <label htmlFor="senha" className="block text-sm font-medium text-gray-900">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-900">
               Senha
             </label>
             <input
-              id="senha"
-              name="senha"
+              id="password"
+              name="password"
               type="password"
               required
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
+              value={password}
+              onChange={(e) => setpassword(e.target.value)}
               className="block w-full rounded-md px-3 py-1.5 text-base"
             />
           </div>
