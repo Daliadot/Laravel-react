@@ -7,7 +7,7 @@ return [
         'passwords' => 'usuarios',
     ],
 
-    'guards' => [
+      'guards' => [
         'web' => [
             'driver' => 'session',
             'provider' => 'usuarios',
@@ -24,23 +24,23 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
+            'driver' => 'jwt',
             'provider' => 'usuarios',
-            'hash' => false,
         ],
 
+        // ✅ Troque 'token' por 'jwt' aqui:
         'api-admin' => [
-            'driver' => 'token',
+            'driver' => 'jwt',
             'provider' => 'admins',
-            'hash' => false,
         ],
 
         'api-instituicao' => [
-            'driver' => 'token',
+            'driver' => 'jwt',
             'provider' => 'instituicoes',
-            'hash' => false,
         ],
     ],
+
+   
 
     'providers' => [
         'usuarios' => [

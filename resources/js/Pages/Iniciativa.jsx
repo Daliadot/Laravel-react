@@ -156,7 +156,6 @@ const Iniciativas = () => {
   });
 
 
-
 useEffect(() => {
   const token = localStorage.getItem('token');
   console.log("Token:", token);
@@ -188,6 +187,9 @@ useEffect(() => {
     setSelecionada(null);
     setIsRegisterOpen(false);
   };
+
+  console.log("token");
+
 
   const handleRegister = () => {
     console.log("Cadastrar iniciativa:", newInitiative);

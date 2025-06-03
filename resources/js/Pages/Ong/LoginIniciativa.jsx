@@ -1,50 +1,52 @@
 import { useState } from "react";
-import { useForm, usePage } from "@inertiajs/react";
+import axios from "axios";
 
 export default function LoginForm() {
-  const { data, setData, post, processing, errors } = useForm({
-    email: "",
-    password: "",
-  });
-
-  const { props } = usePage();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    setData("email", email);
-    setData("password", password);
+    try {
+      const response = await axios.post("/login/instituicao", {
+        email,
+        password,
+      });
 
-    post("/login/instituicao", {
-      onSuccess: () => {
-        if (props?.auth?.user) {
-          localStorage.setItem("token", props.auth.user.token);
-          alert("Login feito com sucesso!");
-        }
-      },
-      onError: () => {
-        alert("Erro no login.");
-      },
-    });
+      const token = response.data.token;
+
+      // Armazena o token JWT no localStorage
+      localStorage.setItem("token", token);
+
+      alert("Login com JWT feito com sucesso!");
+
+      // Redireciona para o dashboard
+      window.location.href = "/login/instituicao";
+    } catch (error) {
+      console.error(error);
+      alert("Erro no login. Verifique seu e-mail e senha.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center dark:bg-zinc-800 bg-gray-100 p-4">
       <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-xl w-full max-w-md space-y-6">
-        <h2 className="text-2xl font-bold text-center dark:text-[#7a7a7a] text-gray-800">Login</h2>
+        <h2 className="text-2xl font-bold text-center dark:text-[#7a7a7a] text-gray-800">Login (JWT)</h2>
 
         <form className="space-y-4" onSubmit={handleLogin}>
           <Input label="Email" value={email} onChange={setEmail} type="email" />
           <Input label="Senha" value={password} onChange={setPassword} type="password" />
           <button
             type="submit"
-            disabled={processing}
+            disabled={loading}
             className="w-full bg-blue-600 dark:bg-blue-900 text-white py-2 rounded-lg hover:bg-blue-700"
           >
-            Entrar
+            {loading ? "Entrando..." : "Entrar"}
           </button>
         </form>
       </div>
@@ -52,7 +54,7 @@ export default function LoginForm() {
   );
 }
 
-// Input auxiliar
+// Componente reutilizável de input
 function Input({ label, value, onChange, type = "text" }) {
   return (
     <div>
