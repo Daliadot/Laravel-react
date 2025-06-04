@@ -24,7 +24,7 @@ export default function Login() {
           src="https://i.postimg.cc/NjVmBH7g/Dark-left-logo.png"
           className="mx-auto h-20 rounded-lg w-auto"
         />
-        <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
+        <h2 className="mt-10 text-center dark:text-sky-900  text-2xl font-bold tracking-tight text-gray-900">
           Entre na sua conta de voluntário...
         </h2>
       </div>
@@ -32,7 +32,7 @@ export default function Login() {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit} className="space-y-6" noValidate>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-900">
+            <label htmlFor="email" className="block text-sm font-medium dark:text-white text-gray-900">
               Digite seu email
             </label>
             <input
@@ -50,7 +50,7 @@ export default function Login() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-900">
+            <label htmlFor="password"  className="block text-sm   dark:text-white font-medium text-gray-900">
               Senha
             </label>
             <input

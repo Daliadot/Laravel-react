@@ -14,7 +14,7 @@ export default function Admin() {
       password,
     }, {
       onSuccess: () => {
-        window.location.href = "/perfil"; // ou qualquer rota protegida
+        window.location.href = "/admin/dashboard";
       },
       onError: (errors) => {
         setError(errors.email || errors.password || "Credenciais inválidas.");

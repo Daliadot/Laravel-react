@@ -10,6 +10,7 @@ Route::get('/', fn() => Inertia::render('Welcome'));
 Route::get('/CadastroVoluntario', fn() => Inertia::render('User/CadastroVoluntario'));
 Route::get('/CadastroInstituicao', fn() => Inertia::render('Ong/CadastroInstituicao'));
 Route::get('/admin', fn() => Inertia::render('Admin'));
+ Route::get('/instituicao/edit',fn() => Inertia::render('Ong/ONGedit'));
 
 // Login voluntário
 Route::get('/login/voluntario', [AuthController::class, 'indexUsuario'])->name('login.voluntario');
@@ -33,13 +34,16 @@ Route::middleware(['web', 'auth:web'])->group(function () {
 
 // Painel admin
 Route::middleware(['web', 'auth:admin'])->group(function () {
-    Route::get('/admin/dashboard', fn() => 'Dashboard Admin')->name('admin.dashboard');
+    Route::get('/admin/dashboard', fn() => Inertia::render('AdminDashboard'))->name('admin.dashboard');
 });
 
 // Painel instituição
 Route::middleware(['web', 'auth:instituicao'])->group(function () {
     Route::get('/instituicao/dashboard', fn() => 'Dashboard Instituição')->name('instituicao.dashboard');
+   
+
 });
+
 
 // Perfil comum a todos os tipos de usuário autenticado
 Route::middleware('web')->get('/perfil', function () {
