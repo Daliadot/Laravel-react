@@ -1,24 +1,49 @@
 import { Mail, Lock, LogOut, User as UsuariosIcon } from "lucide-react";
 import { usePage } from "@inertiajs/react";
+import { useEffect } from "react";
 
 const Conta = () => {
-  const { user } = usePage().props;
+  const { authUser } = usePage().props;
 
-  const handleLogout = async () => {
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+  useEffect(() => {
+    if (!authUser) {
+      window.location.href = "/login/voluntario"; // rota para login, ajuste se precisar
+    }
+  }, [authUser]);
 
-    await fetch("/logout", {
-      method: "POST",
-      headers: {
-        "X-CSRF-TOKEN": token,
-        "X-Requested-With": "XMLHttpRequest",
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
+  if (!authUser) return null;
 
-    window.location.href = "/";
-  };
+ const handleLogout = async () => {
+  try {
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
+    console.log("Token CSRF no logout:", token);
+
+    const response = await fetch("/logout", {
+  method: "POST",
+  headers: {
+    "X-CSRF-TOKEN": token || "",
+    "X-Requested-With": "XMLHttpRequest",
+    "Accept": "application/json",
+  },
+  credentials: "same-origin", // bom!
+});
+
+    if (response.ok) {
+      window.location.href = "/";
+    } else {
+      const errorData = await response.json();
+      console.error("Erro ao sair:", errorData);
+      alert("Erro ao sair. Tente novamente.");
+    }
+  } catch (error) {
+    alert("Erro de rede ao tentar sair.");
+    console.error(error);
+  }
+};
+
+  // Log só uma vez, sem duplicação
+  const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
+  console.log("Token CSRF capturado:", token);
 
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 bg-white dark:bg-zinc-900 rounded-xl space-y-6 shadow-xl">
@@ -29,7 +54,7 @@ const Conta = () => {
           <UsuariosIcon className="text-sky-800" />
           <div>
             <p className="text-sm text-neutral-500 dark:text-neutral-300">Nome</p>
-            <p className="text-base font-medium text-neutral-700 dark:text-white">{user.nome}</p>
+            <p className="text-base font-medium text-neutral-700 dark:text-white">{authUser.nome}</p>
           </div>
         </div>
 
@@ -37,7 +62,7 @@ const Conta = () => {
           <Mail className="text-sky-800" />
           <div>
             <p className="text-sm text-neutral-500 dark:text-neutral-300">Email</p>
-            <p className="text-base font-medium text-neutral-700 dark:text-white">{user.email}</p>
+            <p className="text-base font-medium text-neutral-700 dark:text-white">{authUser.email}</p>
           </div>
         </div>
 
@@ -45,7 +70,7 @@ const Conta = () => {
           <Lock className="text-sky-800" />
           <div>
             <p className="text-sm text-neutral-500 dark:text-neutral-300">Tipo de Conta</p>
-            <p className="text-base font-medium text-neutral-700 dark:text-white capitalize">{user.tipo}</p>
+            <p className="text-base font-medium text-neutral-700 dark:text-white capitalize">{authUser.tipo}</p>
           </div>
         </div>
       </div>

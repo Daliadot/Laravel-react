@@ -34,7 +34,7 @@ export default function CadastroInstituicao() {
     e.preventDefault();
 
     const payload = {
-      nm_instituicao: nome,
+      nome: nome,
       email,
       password,
       cnpj,

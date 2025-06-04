@@ -7,7 +7,7 @@ return [
         'passwords' => 'usuarios',
     ],
 
-      'guards' => [
+    'guards' => [
         'web' => [
             'driver' => 'session',
             'provider' => 'usuarios',
@@ -23,24 +23,8 @@ return [
             'provider' => 'instituicoes',
         ],
 
-        'api' => [
-            'driver' => 'jwt',
-            'provider' => 'usuarios',
-        ],
-
-        // ✅ Troque 'token' por 'jwt' aqui:
-        'api-admin' => [
-            'driver' => 'jwt',
-            'provider' => 'admins',
-        ],
-
-        'api-instituicao' => [
-            'driver' => 'jwt',
-            'provider' => 'instituicoes',
-        ],
+        // 🔴 REMOVIDO: guards 'api', 'api-admin', 'api-instituicao' com driver 'jwt'
     ],
-
-   
 
     'providers' => [
         'usuarios' => [
@@ -74,7 +58,7 @@ return [
             'throttle' => 60,
         ],
 
-        'instituicoes' => [ // <- mantido como está
+        'instituicoes' => [
             'provider' => 'instituicoes',
             'table' => 'password_resets',
             'expire' => 60,

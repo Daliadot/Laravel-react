@@ -11,20 +11,20 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      const response = await axios.post("/login/instituicao", {
-        email,
-        password,
-      });
+      await axios.post(
+        "/login/instituicao",
+        { email, password },
+        {
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // importante para enviar e receber cookies da sessão
+        }
+      );
 
-      const token = response.data.token;
-
-      // Armazena o token JWT no localStorage
-      localStorage.setItem("token", token);
-
-      alert("Login com JWT feito com sucesso!");
-
-      // Redireciona para o dashboard
-      window.location.href = "/login/instituicao";
+      // Redireciona para o dashboard da instituição
+      window.location.href = "/perfil";
     } catch (error) {
       console.error(error);
       alert("Erro no login. Verifique seu e-mail e senha.");
@@ -36,7 +36,7 @@ export default function LoginForm() {
   return (
     <div className="min-h-screen flex items-center justify-center dark:bg-zinc-800 bg-gray-100 p-4">
       <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-xl w-full max-w-md space-y-6">
-        <h2 className="text-2xl font-bold text-center dark:text-[#7a7a7a] text-gray-800">Login (JWT)</h2>
+        <h2 className="text-2xl font-bold text-center dark:text-[#7a7a7a] text-gray-800">Login Instituição</h2>
 
         <form className="space-y-4" onSubmit={handleLogin}>
           <Input label="Email" value={email} onChange={setEmail} type="email" />

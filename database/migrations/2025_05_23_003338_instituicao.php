@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('Instituicoes', function (Blueprint $table) {
             $table->id();
-            $table->string('nm_instituicao');
+            $table->string('nome');
             $table->string('email')->unique();
             $table->string('password', 255);
             $table->string('cnpj')->nullable()->unique();

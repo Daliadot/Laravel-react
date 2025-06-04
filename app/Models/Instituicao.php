@@ -9,7 +9,7 @@ class Instituicao extends Authenticatable implements JWTSubject
     protected $table = 'Instituicoes'; // nome correto da tabela no plural
 
     protected $fillable = [
-        'nm_instituicao',
+        'nome',
         'email',
         'password',
         'cnpj',

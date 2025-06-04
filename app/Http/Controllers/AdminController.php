@@ -26,7 +26,7 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'NM_admin' => 'required',
+            'nome' => 'required',
             'email' => 'required',
             'password' => 'required'
         ]);
@@ -82,7 +82,7 @@ class AdminController extends Controller
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            'NM_admin' => 'required',
+            'nome' => 'required',
             'email' => 'required',
             'password' => 'required'
         ]);
@@ -104,7 +104,7 @@ class AdminController extends Controller
             ], 404);
         }
 
-        $regadminBanco->NM_admin = $request->NM_admin;
+        $regadminBanco->nome = $request->nome;
         $regadminBanco->email = $request->email;
         $regadminBanco->email = $request->email;
 

@@ -12,12 +12,12 @@ const CardInstituicao = ({ instituicao, onClick }) => (
     <div className="relative w-full h-48">
       <img
         src={instituicao.imagem}
-        alt={instituicao.nm_instituicao}
+        alt={instituicao.nome}
         className="w-full h-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
       <h3 className="absolute bottom-2 left-2 right-2 text-white text-xl font-bold truncate">
-        {instituicao.nm_instituicao}
+        {instituicao.nome}
       </h3>
     </div>
   </div>
@@ -47,7 +47,7 @@ const Modal = ({
 const handleEnviarPerfil = () => {
   const isLoggedIn = localStorage.getItem("userLogged");
   if (!isLoggedIn) {
-    Inertia.visit("/LoginVoluntario");
+    Inertia.visit("/login/voluntario");
   } else {
     handleConfirm();
   }
@@ -158,9 +158,11 @@ const Iniciativas = () => {
 
 useEffect(() => {
   const token = localStorage.getItem('token');
-  console.log("Token:", token);
+  const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-  fetch("http://localhost:8000/api/instituicoes", {
+  console.log("🛡️ CSRF Token:", csrf);
+
+  fetch("http://localhost:8000/api/Instituicao", {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -177,7 +179,7 @@ useEffect(() => {
 
   const handleCardClick = (instituicao) => {
     setSelecionada({
-      title: instituicao.nm_instituicao,
+      title: instituicao.nome,
       description: instituicao.descricao,
       image: instituicao.imagem,
     });

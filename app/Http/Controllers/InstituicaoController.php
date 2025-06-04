@@ -19,7 +19,7 @@ class InstituicaoController extends Controller
     public function store(Request $request)
 {
     $validator = Validator::make($request->all(), [
-        'nm_instituicao' => 'required|string|max:255',
+        'nome' => 'required|string|max:255',
         'email' => 'required|email|unique:instituicoes,email',
         'password' => 'required|min:6',
         'cnpj' => 'nullable|string',
@@ -42,7 +42,7 @@ class InstituicaoController extends Controller
     }
 
     $registro = Instituicao::create([
-        'nm_instituicao' => $request->nm_instituicao,
+        'nome' => $request->nome,
         'email' => $request->email,
         'password' => Hash::make($request->password), // Criptografa corretamente
         'cnpj' => $request->cnpj,

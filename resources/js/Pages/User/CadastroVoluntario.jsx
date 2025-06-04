@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 export default function Register() {
   const { data, setData, post, processing, errors } = useForm({
-    nm_usuario: '',
+    nome: '',
     email: '',
     password: '',
     cpf: '',
@@ -64,19 +64,19 @@ const handleSubmit = (e) => {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
           <div>
-            <label htmlFor="nm_usuario" className="block text-sm font-medium text-gray-900">
+            <label htmlFor="nome" className="block text-sm font-medium text-gray-900">
               Nome Completo
             </label>
             <input
-              id="nm_usuario"
-              name="nm_usuario"
+              id="nome"
+              name="nome"
               type="text"
-              value={data.nm_usuario}
-              onChange={(e) => setData('nm_usuario', e.target.value)}
+              value={data.nome}
+              onChange={(e) => setData('nome', e.target.value)}
               required
               className="mt-2 block w-full rounded-md px-3 py-1.5 text-base"
             />
-            {errors.nm_usuario && <div className="text-red-500 text-sm mt-1">{errors.nm_usuario}</div>}
+            {errors.nome && <div className="text-red-500 text-sm mt-1">{errors.nome}</div>}
           </div>
 
           <div>

@@ -19,13 +19,15 @@ Route::options('/{any}', function () {
 })->where('any', '.*');
 
 // Rotas Admin protegidas por JWT
-// Route::middleware('auth:api')->group(function () {
+
     Route::post('/admin',[AdminController::class, 'store']);
     Route::put('/admin/{id}',[AdminController::class,'update']);
     Route::delete('/admin/{id}',[AdminController::class,'destroy']);
     Route::get('/admin',[AdminController::class,'index']);
     Route::get('/admin/{id}',[AdminController::class,'show']);
-// });
+Route::middleware(['auth:admin'])->get('/verify-admin', function () {
+    return response()->json(['authenticated' => true]);
+});
 
 // Rotas Formulario protegidas (exemplo)
 Route::post('/formularios', [FormularioController::class, 'store']);

@@ -5,9 +5,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-//algumas rotas de autenticação foram comentadas para fazer os botoes do 
-// AdminDashboard funcionarem, mas só descomentar quando tiver tudo pronto
-// na parte de autenticação
 
 // Páginas públicas
 Route::get('/', fn() => Inertia::render('Welcome'));
@@ -22,13 +19,12 @@ Route::post('/login/voluntario', [AuthController::class, 'loginUsuario'])->name(
 
 // Login admin
 Route::get('/login/admin', [AuthController::class, 'indexAdmin'])->name('login.admin');
-// Route::post('/login/admin', [AuthController::class, 'loginAdmin'])->name('auth.admin');
+Route::post('/login/admin', [AuthController::class, 'loginAdmin'])->name('auth.admin');
 
 // Login instituição
 Route::get('/login/instituicao', [AuthController::class, 'indexInstituicao'])->name('login.instituicao');
 Route::post('/login/instituicao', [AuthController::class, 'loginInstituicao'])->name('auth.instituicao');
-
-// ✅ Logout compartilhado para qualquer guard
+ //logout
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('web')->name('logout');
 
 // Painel voluntário
@@ -37,9 +33,9 @@ Route::middleware(['web', 'auth:web'])->group(function () {
 });
 
 // Painel admin
-// Route::middleware(['web', 'auth:admin'])->group(function () {
+ Route::middleware(['web', 'auth:admin'])->group(function () {
     Route::get('/admin/dashboard', fn() => Inertia::render('AdminDashboard'))->name('admin.dashboard');
-// });
+});
 
 // Painel instituição
 Route::middleware(['web', 'auth:instituicao'])->group(function () {
@@ -50,10 +46,10 @@ Route::middleware(['web', 'auth:instituicao'])->group(function () {
 
 
 // Perfil comum a todos os tipos de usuário autenticado
-Route::middleware('web')->get('/perfil', function () {
+Route::get('/perfil', function () {
     if (Auth::guard('web')->check()) {
         $user = Auth::guard('web')->user();
-        $tipo = 'usuario';
+        $tipo = 'voluntario';
     } elseif (Auth::guard('instituicao')->check()) {
         $user = Auth::guard('instituicao')->user();
         $tipo = 'instituicao';
@@ -65,10 +61,10 @@ Route::middleware('web')->get('/perfil', function () {
     }
 
     return Inertia::render('Conta', [
-        'user' => [
-            'nome' => $user->nome ?? $user->nm_instituicao ?? $user->name ?? 'Nome não encontrado',
-            'email' => $user->email ?? 'Email não encontrado',
+        'authUser' => [
+            'nome' => $user->nome ?? $user->nm_instituicao ?? $user->name,
+            'email' => $user->email,
             'tipo' => $tipo,
         ]
     ]);
-})->name('perfil');
+});

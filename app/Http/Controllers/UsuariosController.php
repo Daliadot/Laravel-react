@@ -24,7 +24,7 @@ class UsuariosController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'nm_usuario' => 'required|string|max:255',
+            'nome' => 'required|string|max:255',
             'email' => 'required|email|unique:Usuarios,email',
             'password' => 'required|min:6',
             'cpf' => ['required', 'regex:/^\d{11}$/'],
@@ -38,7 +38,7 @@ class UsuariosController extends Controller
         }
 
         Usuarios::create([
-            'nm_usuario' => $request->nm_usuario,
+            'nome' => $request->nome,
             'email' => $request->email,
             'password' => Hash::make($request->password), // ← Aqui a password é criptografada corretamente
             'cpf' => $request->cpf,
@@ -84,14 +84,14 @@ class UsuariosController extends Controller
         }
 
         $request->validate([
-            'nm_usuario' => 'required|string|max:255',
+            'nome' => 'required|string|max:255',
             'email' => 'required|email',
             'password' => 'required|min:6',
             'cpf' => ['required', 'regex:/^\d{11}$/']
         ]);
 
         $Usuarios->update([
-            'nm_usuario' => $request->nm_usuario,
+            'nome' => $request->nome,
             'email' => $request->email,
             'password' => Hash::make($request->password), // ← Criptografa a nova password
             'cpf' => $request->cpf
