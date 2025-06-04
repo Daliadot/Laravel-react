@@ -6,12 +6,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Instituicao extends Authenticatable implements JWTSubject
 {
-    protected $table = 'instituicoes'; // nome correto da tabela no plural
+    protected $table = 'Instituicoes'; // nome correto da tabela no plural
 
     protected $fillable = [
         'nm_instituicao',
         'email',
         'password',
+        'cnpj',
         'cep',
         'rua',
         'numero',
@@ -19,6 +20,9 @@ class Instituicao extends Authenticatable implements JWTSubject
         'cidade',
         'telefone',
         'descricao',
+        'imagem',
+        'status', // Adiciona o campo status
+
     ];
       public function getJWTIdentifier()
     {

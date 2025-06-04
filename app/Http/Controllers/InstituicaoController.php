@@ -6,6 +6,7 @@ use App\Models\Instituicao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule; // importa Rule para validação de status
 
 class InstituicaoController extends Controller
 {
@@ -53,6 +54,7 @@ class InstituicaoController extends Controller
         'telefone' => $request->telefone,
         'descricao' => $request->descricao,
         'imagem' => $request->imagem,
+        'status' => 'pendente', // Define o status inicial como 'pendente'
     ]);
 
     return response()->json([
@@ -77,7 +79,10 @@ class InstituicaoController extends Controller
         $instituicao->status = $request->status;
         $instituicao->save();
 
-        return response()->json($instituicao, 200);
+        return response()->json([
+            'success' => true,
+            'instituicao' => $instituicao
+        ], 200);
     }
 
     public function destroy($id)

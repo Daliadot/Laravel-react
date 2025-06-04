@@ -19,13 +19,13 @@ Route::options('/{any}', function () {
 })->where('any', '.*');
 
 // Rotas Admin protegidas por JWT
-Route::middleware('auth:api')->group(function () {
+// Route::middleware('auth:api')->group(function () {
     Route::post('/admin',[AdminController::class, 'store']);
     Route::put('/admin/{id}',[AdminController::class,'update']);
     Route::delete('/admin/{id}',[AdminController::class,'destroy']);
     Route::get('/admin',[AdminController::class,'index']);
     Route::get('/admin/{id}',[AdminController::class,'show']);
-});
+// });
 
 // Rotas Formulario protegidas (exemplo)
 Route::post('/formularios', [FormularioController::class, 'store']);
@@ -38,10 +38,10 @@ Route::middleware('auth:api')->group(function () {
 Route::post('/Instituicao',[InstituicaoController::class, 'store']);
 Route::get('/Instituicao',[InstituicaoController::class, 'index']);
 Route::get('/Instituicao/{id}',[InstituicaoController::class, 'show']);
-Route::middleware('auth:api')->group(function () {
+// Route::middleware('auth:api')->group(function () {
     Route::put('/Instituicao/{id}',[InstituicaoController::class, 'update']);
     Route::delete('/Instituicao/{id}',[InstituicaoController::class, 'destroy']);
-});
+// });
 
 // Rotas Usuarios protegidas
 Route::get('/usuarios',[UsuariosController::class, 'index']);

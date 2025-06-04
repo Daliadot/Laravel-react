@@ -5,6 +5,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+//algumas rotas de autenticação foram comentadas para fazer os botoes do 
+// AdminDashboard funcionarem, mas só descomentar quando tiver tudo pronto
+// na parte de autenticação
+
 // Páginas públicas
 Route::get('/', fn() => Inertia::render('Welcome'));
 Route::get('/CadastroVoluntario', fn() => Inertia::render('User/CadastroVoluntario'));
@@ -18,7 +22,7 @@ Route::post('/login/voluntario', [AuthController::class, 'loginUsuario'])->name(
 
 // Login admin
 Route::get('/login/admin', [AuthController::class, 'indexAdmin'])->name('login.admin');
-Route::post('/login/admin', [AuthController::class, 'loginAdmin'])->name('auth.admin');
+// Route::post('/login/admin', [AuthController::class, 'loginAdmin'])->name('auth.admin');
 
 // Login instituição
 Route::get('/login/instituicao', [AuthController::class, 'indexInstituicao'])->name('login.instituicao');
@@ -33,9 +37,9 @@ Route::middleware(['web', 'auth:web'])->group(function () {
 });
 
 // Painel admin
-Route::middleware(['web', 'auth:admin'])->group(function () {
+// Route::middleware(['web', 'auth:admin'])->group(function () {
     Route::get('/admin/dashboard', fn() => Inertia::render('AdminDashboard'))->name('admin.dashboard');
-});
+// });
 
 // Painel instituição
 Route::middleware(['web', 'auth:instituicao'])->group(function () {
