@@ -3,33 +3,21 @@ import { useEffect, useState } from "react";
 export default function AdminDashboard() {
   const [pendentes, setPendentes] = useState([]);
   const [aceitos, setAceitos] = useState([]);
-  const [erroAuth, setErroAuth] = useState(false); // ⬅️ novo estado para mostrar erro
 
   useEffect(() => {
-    fetch("http://localhost:8000/admin/dashboard", {
+    fetch("http://localhost:8000/api/Instituicao", {
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Não autenticado");
-        }
-        return res.json();
+      .then((res) => res.json())
+      .then((dados) => {
+        setPendentes(dados.filter((item) => item.status === "pendente"));
+        setAceitos(dados.filter((item) => item.status === "aceito"));
       })
-      .then(() => {
-        fetch("http://localhost:8000/api/Instituicao", {
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-          .then((res) => res.json())
-          .then((dados) => {
-            setPendentes(dados.filter((item) => item.status === "pendente"));
-            setAceitos(dados.filter((item) => item.status === "aceito"));
-          });
-      })
-      .catch(() => {
-        setErroAuth(true); // ⬅️ apenas marca como não autenticado
+      .catch((err) => {
+        console.error("Erro ao carregar dados:", err);
       });
   }, []);
 
@@ -84,70 +72,127 @@ export default function AdminDashboard() {
       .catch(() => alert("Erro de conexão ao excluir a instituição."));
   };
 
-  // ⬇️ Mostra mensagem caso não autenticado
-  if (erroAuth) {
-    return (
-      <div className="text-center mt-20">
-        <h2 className="text-2xl text-red-600 font-bold">Acesso negado</h2>
-        <p>Você não está autenticado como administrador.</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-4xl mx-auto p-8 rounded-2xl space-y-8">
-      <div className="max-w-[85rem] px-4 py-10 sm:px-6 dark:bg-[#0D0D0D] bg-gray-100 lg:px-8 lg:py-14 mx-auto shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]">
-        <h2 className="text-3xl font-extrabold dark:text-[#b0b0b0] text-[#313A4B]">
-          Painel do Administrador
-        </h2>
+    <div className="min-h-screen bg-gray-100 dark:bg-[#0D0D0D] text-[#313A4B] dark:text-[#b0b0b0] p-8 flex flex-col items-center">
+      <div className="max-w-5xl w-full bg-white dark:bg-[#1a1a1a] rounded-3xl shadow-lg p-10 space-y-12">
+        <header>
+          <h1 className="text-4xl font-extrabold tracking-tight mb-2 break-words">Painel do Administrador</h1>
+          <p className="text-gray-600 dark:text-gray-400 break-words">
+            Gerencie as instituições cadastradas. Aceite, recuse ou exclua conforme necessário.
+          </p>
+        </header>
 
-        <div className="mb-8">
-          <h2 className="text-xl mb-4">Iniciativas Pendentes</h2>
-          {pendentes.length === 0 && <p>Nenhuma iniciativa pendente.</p>}
-          <ul>
-            {pendentes.map((inst) => (
-              <li key={inst.id} className="mb-4 p-4 border shadow-md rounded">
-                <h3 className="font-bold text-lg">{inst.nome}</h3>
-                <p>{inst.descricao}</p>
-                <div className="mt-2 flex gap-2">
-                  <button
-                    className="bg-green-600 text-white h-10 px-4 py-1 rounded-full"
-                    onClick={() => atualizarStatus(inst.id, "aceito")}
-                  >
-                    Aceitar
-                  </button>
-                  <button
-                    className="bg-red-600 text-white h-10 px-4 py-1 rounded-full"
-                    onClick={() => atualizarStatus(inst.id, "rejeitado")}
-                  >
-                    Recusar
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {/* Pendentes */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-6 border-b border-gray-300 dark:border-gray-700 pb-2">
+            Iniciativas Pendentes
+          </h2>
+          {pendentes.length === 0 ? (
+            <p className="text-gray-500 dark:text-gray-400 italic">Nenhuma iniciativa pendente.</p>
+          ) : (
+            <ul className="space-y-6">
+              {pendentes.map((inst) => (
+                <li
+                  key={inst.id}
+                  className="bg-gray-50 dark:bg-[#222222] rounded-xl border border-gray-300 dark:border-gray-700 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-6"
+                >
+                  {/* Imagem */}
+                  <div className="flex-shrink-0 w-full sm:w-40 h-28 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700 bg-gray-200 dark:bg-gray-700">
+                    {inst.imagem ? (
+                      <img
+                        src={inst.imagem}
+                        alt={`Imagem da instituição ${inst.nome}`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-600 text-sm">
+                        Sem imagem
+                      </div>
+                    )}
+                  </div>
 
-        <div>
-          <h2 className="text-xl mb-4">Iniciativas Aceitas</h2>
-          {aceitos.length === 0 && <p>Nenhuma iniciativa aceita.</p>}
-          <ul>
-            {aceitos.map((inst) => (
-              <li key={inst.id} className="mb-4 p-4 border rounded">
-                <h3 className="font-bold">{inst.nome}</h3>
-                <p>{inst.descricao}</p>
-                <div className="mt-2 flex gap-2">
-                  <button
-                    className="bg-gray-700 text-white px-4 py-1 rounded"
-                    onClick={() => excluirInstituicao(inst.id)}
-                  >
-                    Excluir
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
+                  {/* Conteúdo */}
+                  <div className="flex flex-col flex-grow min-w-0">
+                    <h3 className="text-xl font-semibold mb-1 truncate" title={inst.nome}>
+                      {inst.nome}
+                    </h3>
+                    <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed break-words overflow-auto max-h-32">
+                      {inst.descricao}
+                    </p>
+                    <div className="flex gap-4 flex-wrap">
+                      <button
+                        onClick={() => atualizarStatus(inst.id, "aceito")}
+                        className="flex-1 sm:flex-none bg-[#2563eb] hover:bg-[#1d4ed8] text-white py-2 px-6 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2563eb]"
+                        aria-label={`Aceitar ${inst.nome}`}
+                      >
+                        Aceitar
+                      </button>
+                      <button
+                        onClick={() => atualizarStatus(inst.id, "rejeitado")}
+                        className="flex-1 sm:flex-none bg-[#ef4444] hover:bg-[#b91c1c] text-white py-2 px-6 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+                        aria-label={`Recusar ${inst.nome}`}
+                      >
+                        Recusar
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        {/* Aceitos */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-6 border-b border-gray-300 dark:border-gray-700 pb-2">
+            Iniciativas Aceitas
+          </h2>
+          {aceitos.length === 0 ? (
+            <p className="text-gray-500 dark:text-gray-400 italic">Nenhuma iniciativa aceita.</p>
+          ) : (
+            <ul className="space-y-6">
+              {aceitos.map((inst) => (
+                <li
+                  key={inst.id}
+                  className="bg-gray-50 dark:bg-[#222222] rounded-xl border border-gray-300 dark:border-gray-700 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-6 items-center"
+                >
+                  <div className="flex-shrink-0 w-full sm:w-40 h-28 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700 bg-gray-200 dark:bg-gray-700">
+                    {inst.imagem ? (
+                      <img
+                        src={inst.imagem}
+                        alt={`Imagem da instituição ${inst.nome}`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-600 text-sm">
+                        Sem imagem
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col flex-grow min-w-0">
+                    <h3 className="text-xl font-semibold truncate" title={inst.nome}>
+                      {inst.nome}
+                    </h3>
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed break-words overflow-auto max-h-32">
+                      {inst.descricao}
+                    </p>
+                  </div>
+                  <div className="flex-shrink-0 mt-4 sm:mt-0 flex gap-4">
+                    <button
+                      onClick={() => excluirInstituicao(inst.id)}
+                      className="bg-gray-700 hover:bg-gray-800 text-white py-2 px-6 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-700"
+                      aria-label={`Excluir ${inst.nome}`}
+                    >
+                      Excluir
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </div>
     </div>
   );
