@@ -4,7 +4,8 @@ export default function CadastroInstituicao() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [cnpj, setCnpj] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [cnpj, setCnpj] = useState(null);
   const [cep, setCep] = useState("");
   const [rua, setRua] = useState("");
   const [numero, setNumero] = useState("");
@@ -12,7 +13,7 @@ export default function CadastroInstituicao() {
   const [cidade, setCidade] = useState("");
   const [telefone, setTelefone] = useState("");
   const [descricao, setDescricao] = useState("");
-  const [imagemBase64, setImagemBase64] = useState(null);
+  const [imagemBase64, setImagemBase64] = useState("");
   const [previews, setPreviews] = useState([]);
   const [showUpload, setShowUpload] = useState(false);
 
@@ -32,6 +33,11 @@ export default function CadastroInstituicao() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+      
+    if (password !== confirmPassword) {
+    alert("As senhas não coincidem!");
+    return;
+  }
 
     const payload = {
       nome: nome,
@@ -84,7 +90,7 @@ export default function CadastroInstituicao() {
           <Input label="Nome da Instituição" value={nome} onChange={setNome} />
           <Input label="Email" value={email} onChange={setEmail} type="email" />
           <Input label="Senha" value={password} onChange={setPassword} type="password" />
-          <Input label="Confirmar Senha" type="password" />
+          <Input label="Confirmar Senha" type="password" value={confirmPassword} onChange={setConfirmPassword} />
           <Input label="CNPJ (opcional)" value={cnpj} onChange={setCnpj} />
           <Input label="CEP" value={cep} onChange={setCep} />
           <Input label="Rua" value={rua} onChange={setRua} />

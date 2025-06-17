@@ -1,5 +1,6 @@
 import { useForm, usePage } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
+import { useEffect } from "react";
 
 export default function Login() {
   const { data, setData, post, processing, errors } = useForm({
@@ -9,11 +10,17 @@ export default function Login() {
 
   const { props } = usePage();
   const status = props.status;
+  const { authUser } = props;
+
+  useEffect(() => {
+    if (authUser) {
+      window.location.href = "/perfil";
+    }
+  }, [authUser]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    post('/login/voluntario'); // certifique-se que essa rota existe no Laravel
+    post('/login/voluntario');
   };
 
   return (

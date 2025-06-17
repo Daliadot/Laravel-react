@@ -1,5 +1,10 @@
+import { useEffect } from "react";
 
 const Home = () => {
+  useEffect(() => {
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
+    console.log("Token CSRF capturado no Home:", token);
+  }, []);
   return (
 <>
 

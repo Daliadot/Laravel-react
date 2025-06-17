@@ -25,11 +25,11 @@ const Conta = () => {
     "X-Requested-With": "XMLHttpRequest",
     "Accept": "application/json",
   },
-  credentials: "same-origin", // bom!
+  credentials: "same-origin", 
 });
 
     if (response.ok) {
-      window.location.href = "/";
+      window.location.href = "/perfil";
     } else {
       const errorData = await response.json();
       console.error("Erro ao sair:", errorData);

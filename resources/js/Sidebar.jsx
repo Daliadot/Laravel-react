@@ -2,7 +2,7 @@
 import { BookHeart, Box, ChevronDown, Home, Menu, Sun, Moon, MessageSquare, SmilePlus, User, Wrench, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
-const Sidebar = ({ isOpen, setIsOpen, setActivePage }) => {
+const Sidebar = ({ isOpen, setIsOpen, setActivePage, authUser }) => {
   const [activeDropdown, setActiveDropdown] = useState('');
   const [isDark, setIsDark] = useState(false);
 
@@ -22,31 +22,57 @@ const Sidebar = ({ isOpen, setIsOpen, setActivePage }) => {
       localStorage.setItem('theme', 'light');
     }
   };
-  
-  const navItems = [
-    { title: 'Home', icon: Home, hasDropdown: false },
-    { 
-      title: 'Perfil',
-      icon: User,
-      hasDropdown: true,
-      dropdownItems: ['Login', 'Conta']
-    },
-    { title: 'Iniciativas', icon: BookHeart, hasDropdown: false },
-    { title: 'Mensagens', icon: MessageSquare, hasDropdown: false },
-    { title: 'Admin', icon: Box, hasDropdown: false },
-    {
-      title: 'Configurações',
-      icon: Wrench,
-      hasDropdown: true,
-      dropdownItems: ['Termos de uso', 'Ajuda?','LoginUser']
-    },
-    {
-      title: 'É uma iniciativa?', 
-      icon: SmilePlus,
-      hasDropdown: true,
-      dropdownItems:[ 'Saiba mais', 'Entre na sua conta' ]
+
+  const getNavItems = (userType) => {
+    if (!userType) {
+      // Usuário não logado - menu público simplificado
+      return [
+        { title: 'Home', icon: Home, hasDropdown: false },
+        { title: 'Perfil', icon: User, hasDropdown: true, dropdownItems: ['Conta'] },
+        { title: 'Iniciativas', icon: BookHeart, hasDropdown: false },
+        { title: 'É uma iniciativa?', icon: SmilePlus, hasDropdown: true, dropdownItems: ['Saiba mais', 'Entre na sua conta'] },
+        { title: 'Ajuda?', icon: Wrench, hasDropdown: false },
+      ];
     }
-  ];
+
+    switch (userType) {
+      case 'admin':
+        return [
+          { title: 'Home', icon: Home, hasDropdown: false },
+          { title: 'Admin', icon: Box, hasDropdown: false },
+          { title: 'Mensagens', icon: MessageSquare, hasDropdown: false },
+          { title: 'Iniciativas', icon: BookHeart, hasDropdown: false },
+          { title: 'Configurações', icon: Wrench, hasDropdown: true, dropdownItems: ['Termos de uso', 'Ajuda?'] },
+          { title: 'Perfil', icon: User, hasDropdown: true, dropdownItems: ['Conta'] },
+        ];
+
+      case 'instituicao':
+        return [
+          { title: 'Home', icon: Home, hasDropdown: false },
+          { title: 'Iniciativas', icon: BookHeart, hasDropdown: false },
+          { title: 'Mensagens', icon: MessageSquare, hasDropdown: false },
+          { title: 'Perfil', icon: User, hasDropdown: true, dropdownItems: ['Conta'] },
+          { title: 'Configurações', icon: Wrench, hasDropdown: true, dropdownItems: ['Termos de uso', 'Ajuda?'] },
+        ];
+
+      case 'voluntario':
+        return [
+          { title: 'Home', icon: Home, hasDropdown: false },
+          { title: 'Mensagens', icon: MessageSquare, hasDropdown: false },
+          { title: 'Iniciativas', icon: BookHeart, hasDropdown: false },
+          { title: 'Perfil', icon: User, hasDropdown: true, dropdownItems: ['Conta'] },
+          { title: 'Configurações', icon: Wrench, hasDropdown: true, dropdownItems: ['Termos de uso', 'Ajuda?'] },
+        ];
+
+      default:
+        return [
+          { title: 'Home', icon: Home, hasDropdown: false },
+          { title: 'Ajuda?', icon: Wrench, hasDropdown: false },
+        ];
+    }
+  };
+
+  const navItems = getNavItems(authUser?.tipo);
 
   return (
     <div 
@@ -117,7 +143,10 @@ const Sidebar = ({ isOpen, setIsOpen, setActivePage }) => {
                   <div
                     key={dropdownItem}
                     className="px-11 py-2 hover:bg-[#f1f1f1] dark:hover:bg-[#3D3D3D] cursor-pointer text-sm"
-                    onClick={() => setActivePage(dropdownItem)}
+                    onClick={(e) => {
+                      e.stopPropagation();  // IMPORTANTE: impede que o clique feche o dropdown
+                      setActivePage(dropdownItem);
+                    }}
                   >
                     {dropdownItem}
                   </div>
@@ -127,18 +156,18 @@ const Sidebar = ({ isOpen, setIsOpen, setActivePage }) => {
           </div>
         ))}
       </nav>
+
       <div className="mt-8 px-4">
-  <button
-    onClick={toggleDarkMode}
-    className="fixed bottom-5 items-center justify-between bg-[#F3F5F7] dark:bg-[#2C2C2C] p-2 rounded-full transition"
-  >
-    <div className="flex items-center gap-2">
-      {isDark ? <Sun size={18} className="text-yellow-500" /> : <Moon size={18} className="text-gray-400" />}
-      <span className={`${isOpen ? 'block' : 'hidden'} text-sm text-gray-700 dark:text-gray-200`}>
-      </span>
-    </div>
-  </button>
-</div>
+        <button
+          onClick={toggleDarkMode}
+          className="fixed bottom-5 items-center justify-between bg-[#F3F5F7] dark:bg-[#2C2C2C] p-2 rounded-full transition"
+        >
+          <div className="flex items-center gap-2">
+            {isDark ? <Sun size={18} className="text-yellow-500" /> : <Moon size={18} className="text-gray-400" />}
+            <span className={`${isOpen ? 'block' : 'hidden'} text-sm text-gray-700 dark:text-gray-200`}></span>
+          </div>
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,10 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { usePage } from "@inertiajs/react";
 
 export default function LoginForm() {
+  const { authUser } = usePage().props;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // ✅ Redireciona se já estiver logado
+  useEffect(() => {
+    if (authUser) {
+      window.location.href = "/";
+    }
+  }, [authUser]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -19,12 +29,12 @@ export default function LoginForm() {
             "X-Requested-With": "XMLHttpRequest",
             "Content-Type": "application/json",
           },
-          withCredentials: true, // importante para enviar e receber cookies da sessão
+          withCredentials: true,
         }
       );
 
-      // Redireciona para o dashboard da instituição
-      window.location.href = "/perfil";
+  
+      window.location.href = "/";
     } catch (error) {
       console.error(error);
       alert("Erro no login. Verifique seu e-mail e senha.");

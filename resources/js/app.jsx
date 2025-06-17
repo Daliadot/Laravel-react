@@ -16,23 +16,27 @@ createInertiaApp({
             `./Pages/${name}.jsx`,
             import.meta.glob('./Pages/**/*.jsx'),
         ),
-    setup({ el, App, props }) {
-        const root = createRoot(el);
-
-        root.render(<App {...props} />);
-    },
+setup({ el, App, props }) {
+  const root = createRoot(el);
+  root.render(<App {...props} />); // props contém authUser, etc
+},
     progress: {
         color: '#4B5563',
     },
 });
 
-export default function App() {
-  const [isOpen, setIsOpen] = useState(true);           // abre/fecha sidebar
-  const [activePage, setActivePage] = useState('Home'); // controla qual conteúdo exibir
+export default function App(props) {
+  const [isOpen, setIsOpen] = useState(true);
+  const [activePage, setActivePage] = useState('Home');
 
   return (
     <div className="flex h-screen">
-      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} setActivePage={setActivePage} />
+      <Sidebar 
+        isOpen={isOpen} 
+        setIsOpen={setIsOpen} 
+        setActivePage={setActivePage} 
+        authUser={props.authUser}  // <-- passe o authUser aqui
+      />
       <MainContent activePage={activePage} />
     </div>
   );

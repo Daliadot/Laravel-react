@@ -1,25 +1,33 @@
-import { useState } from "react";
-import { router } from "@inertiajs/react";
+import { useState, useEffect } from "react";
+import { usePage, router } from "@inertiajs/react";
 
 export default function Admin() {
+  const { authUser } = usePage().props;
   const [email, setEmail] = useState("");
-  const [password, setpassword] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (authUser) {
+      window.location.href = "/perfil";
+    }
+  }, [authUser]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    router.post("/login/admin", {
-      email,
-      password,
-    }, {
-      onSuccess: () => {
-        window.location.href = "/admin/dashboard";
-      },
-      onError: (errors) => {
-        setError(errors.email || errors.password || "Credenciais inválidas.");
-      },
-    });
+    router.post(
+      "/login/admin",
+      { email, password },
+      {
+        onSuccess: () => {
+          window.location.href = "/admin/dashboard";
+        },
+        onError: (errors) => {
+          setError(errors.email || errors.password || "Credenciais inválidas.");
+        },
+      }
+    );
   };
 
   return (
@@ -62,7 +70,7 @@ export default function Admin() {
               type="password"
               required
               value={password}
-              onChange={(e) => setpassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               className="block w-full rounded-md px-3 py-1.5 text-base"
             />
           </div>

@@ -18,6 +18,8 @@ class Authenticate
     {
         return $next($request);
     }
+
+
     protected function redirectTo($request)
 {
     if (!$request->expectsJson()) {

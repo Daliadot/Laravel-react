@@ -3,40 +3,26 @@ import { useEffect, useState } from "react";
 export default function AdminDashboard() {
   const [pendentes, setPendentes] = useState([]);
   const [aceitos, setAceitos] = useState([]);
-  const [erroAuth, setErroAuth] = useState(false); // ⬅️ novo estado para mostrar erro
 
   useEffect(() => {
-    fetch("http://localhost:8000/admin/dashboard", {
-      credentials: "include",
+    fetch("http://localhost:8000/api/Instituicao", {
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Não autenticado");
-        }
-        return res.json();
-      })
-      .then(() => {
-        fetch("http://localhost:8000/api/Instituicao", {
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-          .then((res) => res.json())
-          .then((dados) => {
-            setPendentes(dados.filter((item) => item.status === "pendente"));
-            setAceitos(dados.filter((item) => item.status === "aceito"));
-          });
+      .then((res) => res.json())
+      .then((dados) => {
+        setPendentes(dados.filter((item) => item.status === "pendente"));
+        setAceitos(dados.filter((item) => item.status === "aceito"));
       })
       .catch(() => {
-        setErroAuth(true); // ⬅️ apenas marca como não autenticado
+        alert("Erro ao buscar instituições.");
       });
   }, []);
 
   const atualizarStatus = (id, status) => {
     fetch(`http://localhost:8000/api/Instituicao/${id}`, {
       method: "PUT",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -48,7 +34,6 @@ export default function AdminDashboard() {
           setPendentes((prev) => prev.filter((inst) => inst.id !== id));
           if (status === "aceito") {
             fetch(`http://localhost:8000/api/Instituicao/${id}`, {
-              credentials: "include",
               headers: {
                 "Content-Type": "application/json",
               },
@@ -69,7 +54,6 @@ export default function AdminDashboard() {
   const excluirInstituicao = (id) => {
     fetch(`http://localhost:8000/api/Instituicao/${id}`, {
       method: "DELETE",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -83,16 +67,6 @@ export default function AdminDashboard() {
       })
       .catch(() => alert("Erro de conexão ao excluir a instituição."));
   };
-
-  // ⬇️ Mostra mensagem caso não autenticado
-  if (erroAuth) {
-    return (
-      <div className="text-center mt-20">
-        <h2 className="text-2xl text-red-600 font-bold">Acesso negado</h2>
-        <p>Você não está autenticado como administrador.</p>
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-4xl mx-auto p-8 rounded-2xl space-y-8">

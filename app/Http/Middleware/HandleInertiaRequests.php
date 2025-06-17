@@ -16,4 +16,10 @@ class HandleInertiaRequests extends Middleware
             ],
         ]);
     }
+     public function boot()
+{
+    Inertia::share([
+        'authUser' => fn () => Auth::user(),
+    ]);
+}
 }

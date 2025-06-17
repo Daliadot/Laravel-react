@@ -23,7 +23,7 @@ return [
             'provider' => 'instituicoes',
         ],
 
-        // 🔴 REMOVIDO: guards 'api', 'api-admin', 'api-instituicao' com driver 'jwt'
+        
     ],
 
     'providers' => [
