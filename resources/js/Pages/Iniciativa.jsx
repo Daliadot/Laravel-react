@@ -1,8 +1,7 @@
-
-
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { Inertia } from '@inertiajs/inertia';
+
 // Card individual
 const CardInstituicao = ({ instituicao, onClick }) => (
   <div
@@ -23,7 +22,7 @@ const CardInstituicao = ({ instituicao, onClick }) => (
   </div>
 );
 
-// Modal para visualização da iniciativa
+// Modal
 const Modal = ({
   initiative,
   onClose,
@@ -39,18 +38,13 @@ const Modal = ({
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);
-      onConfirmSuccess();
+      onConfirmSuccess(); // fecha o modal depois de 3s
     }, 3000);
   };
 
-// Depois:
-const handleEnviarPerfil = () => {
-  const isLoggedIn = localStorage.getItem("userLogged");
-  if (!isLoggedIn) {
-    Inertia.visit("/login/voluntario");
-  } else {
-    handleConfirm();
-  }
+ const handleEnviarPerfil = () => {
+ 
+  handleConfirm(); 
 };
 
   return (
@@ -155,27 +149,25 @@ const Iniciativas = () => {
     image: null,
   });
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-useEffect(() => {
-  const token = localStorage.getItem('token');
-  const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-  console.log("🛡️ CSRF Token:", csrf);
-
-  fetch("http://localhost:8000/api/Instituicao", {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-  })
-    .then((res) => res.json())
-    .then((dados) => {
-      const aprovadas = dados.filter((item) => item.status === "aceito");
-      setInstituicoes(aprovadas);
+    fetch("http://localhost:8000/api/Instituicao", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     })
-    .catch((erro) => console.error("Erro ao buscar instituições:", erro));
-}, []);
+      .then((res) => res.json())
+      .then((dados) => {
+        const aprovadas = dados.filter((item) => item.status === "aceito");
+        setInstituicoes(aprovadas);
+      })
+      .catch((erro) =>
+        console.error("Erro ao buscar instituições:", erro)
+      );
+  }, []);
 
   const handleCardClick = (instituicao) => {
     setSelecionada({
@@ -190,19 +182,13 @@ useEffect(() => {
     setIsRegisterOpen(false);
   };
 
-  console.log("token");
-
-
   const handleRegister = () => {
     console.log("Cadastrar iniciativa:", newInitiative);
-    // Aqui você pode fazer um POST para a API se quiser salvar no servidor
     setIsRegisterOpen(false);
     setNewInitiative({ title: "", description: "", image: null });
   };
 
-const urlImagem = "https://i.postimg.cc/65NVgn6n/banner-clear.png";
-
-
+  const urlImagem = "https://i.postimg.cc/65NVgn6n/banner-clear.png";
 
   return (
     <div className="min-h-screen dark:bg-zinc-900 bg-gray-50 px-4 pb-8">
