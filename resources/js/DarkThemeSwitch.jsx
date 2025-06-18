@@ -1,27 +1,30 @@
-// src/components/DarkModeSwitch.jsx
 import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 
 const DarkModeSwitch = () => {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    const darkStored = localStorage.getItem("theme") === "dark";
+    const cookieTheme = Cookies.get('theme');
+    const darkStored = cookieTheme === 'dark';
     setIsDark(darkStored);
     if (darkStored) {
-      document.documentElement.classList.add("dark");
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
     }
   }, []);
 
   const toggleDarkMode = (e) => {
-    const checked = e?.target?.checked ?? !document.documentElement.classList.contains("dark");
+    const checked = e?.target?.checked ?? !document.documentElement.classList.contains('dark');
     setIsDark(checked);
     if (checked) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
+      document.documentElement.classList.add('dark');
+      Cookies.set('theme', 'dark', { expires: 365 });
     } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+      document.documentElement.classList.remove('dark');
+      Cookies.set('theme', 'light', { expires: 365 });
     }
   };
 
