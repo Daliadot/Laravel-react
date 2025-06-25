@@ -22,7 +22,7 @@ export default function MainContent({ activePage }) {
       {activePage === 'Temas' && <Temas />}
       {activePage === 'Admin' && <Admin />}
       {activePage === 'Termos de uso' && <Termos />}
-      {activePage === 'Ajuda?' && <Ajuda />}
+      {activePage === 'Contatos' && <Ajuda />}
       {activePage === 'Saiba mais' && <ONGPage/>}
       {activePage === 'Entre na sua conta' && <LoginONG/>}
       {activePage === 'Iniciativas' && <Iniciativas/>}

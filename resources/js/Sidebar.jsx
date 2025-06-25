@@ -30,8 +30,9 @@ const Sidebar = ({ isOpen, setIsOpen, setActivePage, authUser }) => {
         { title: 'Home', icon: Home, hasDropdown: false },
         { title: 'Perfil', icon: User, hasDropdown: true, dropdownItems: ['Conta'] },
         { title: 'Iniciativas', icon: BookHeart, hasDropdown: false },
+        { title: 'Admin', icon: Box, hasDropdown: false },
         { title: 'É uma iniciativa?', icon: SmilePlus, hasDropdown: true, dropdownItems: ['Saiba mais', 'Entre na sua conta'] },
-        { title: 'Ajuda?', icon: Wrench, hasDropdown: false },
+        { title: 'Ajuda?', icon: Wrench, hasDropdown: true, dropdownItems: ['Contatos', 'Termos de uso'] },
       ];
     }
 
@@ -39,7 +40,7 @@ const Sidebar = ({ isOpen, setIsOpen, setActivePage, authUser }) => {
       case 'admin':
         return [
           { title: 'Home', icon: Home, hasDropdown: false },
-          { title: 'Admin', icon: Box, hasDropdown: false },
+          
           { title: 'Mensagens', icon: MessageSquare, hasDropdown: false },
           { title: 'Iniciativas', icon: BookHeart, hasDropdown: false },
           { title: 'Configurações', icon: Wrench, hasDropdown: true, dropdownItems: ['Termos de uso', 'Ajuda?'] },
