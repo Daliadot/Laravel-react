@@ -30,4 +30,6 @@ Clone o projeto:
 git clone https://github.com/seu-usuario/care.ly.git
 cd care.ly
 npm i
+ PHP artistan serve
+Npm run dev 
 
